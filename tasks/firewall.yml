@@ -1,0 +1,12 @@
+---
+
+#- name: INSTALL HIVE| Ensure firewall is configured
+#  ansible.posix.firewalld:
+#    port: "{{ item  }}"
+#    state: enabled
+#    permanent: yes
+#    immediate: yes
+#  with_items:
+#    - "{{ hive_ports }}"
+#  tags:
+#    - firewall

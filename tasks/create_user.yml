@@ -1,0 +1,14 @@
+---
+
+- name: "METASTORE USER and GROUP| Ensure '{{ metastore_group }}' group exists"
+  ansible.builtin.group:
+    name: "{{ metastore_group }}"
+    state: present
+  when: metastore_user_create
+
+- name: "METASTORE USER and GROUP| Ensure '{{ metastore_user }}' user exists"
+  ansible.builtin.user:
+    name: "{{ metastore_user }}"
+    groups: "{{ metastore_group }}"
+    append: true
+  when: metastore_user_create

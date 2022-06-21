@@ -1,0 +1,21 @@
+---
+- name: Install required roles
+  hosts: all
+  vars:
+    java_packages:
+      - java-1.8.0-openjdk
+      - java-11-openjdk
+    java_default_version: java-1.8.0-openjdk
+    set_java_home: true
+    hadoop_version: 3.2.2
+    hadoop_service_name: molecule
+    hdfs_service_set_default: true
+    yarn_service_set_default: true
+  roles:
+    - java
+    - hadoop
+  tasks:
+#    - name: Install net-tools package
+#      ansible.builtin.package:
+#        name: net-tools
+#        state: present

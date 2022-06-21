@@ -1,0 +1,136 @@
+---
+
+- block:
+  - name: FIX Hadoop Jars| Get Hadoop guava jar
+    shell:
+      cmd: "find {{ hadoop_install_dir }}/share/hadoop/common/lib/ -type f -name 'guava-*.jar'"
+    register: _guava_hdp
+  - name: FIX Hadoop Jars| Get Metastore guava jar
+    shell:
+      cmd: "find {{ metastore_install_dir }}/lib/ -type f -name 'guava-*.jar'"
+    register: _guava_metastore
+  - name: FIX Hadoop Jars| Get Hadoop curator-client jar
+    shell:
+      cmd: "find {{ hadoop_install_dir }}/share/hadoop/common/lib/ -type f -name 'curator-client-*.jar'"
+    register: _curator_client_hdp
+  - name: FIX Hadoop Jars| Get Metastore curator-client jar
+    shell:
+      cmd: "find {{ metastore_install_dir }}/lib/ -type f -name 'curator-client-*.jar'"
+    register: _curator_client_metastore
+  - name: FIX Hadoop Jars| Get Hadoop curator-framework jar
+    shell:
+      cmd: "find {{ hadoop_install_dir }}/share/hadoop/common/lib/ -type f -name 'curator-framework-*.jar'"
+    register: _curator_framework_hdp
+  - name: FIX Hadoop Jars| Get Metastore curator-framework jar
+    shell:
+      cmd: "find {{ metastore_install_dir }}/lib/ -type f -name 'curator-framework-*.jar'"
+    register: _curator_framework_metastore
+  - name: FIX Hadoop Jars| Get Hadoop curator-recipes jar
+    shell:
+      cmd: "find {{ hadoop_install_dir }}/share/hadoop/common/lib/ -type f -name 'curator-recipes-*.jar'"
+    register: _curator_recipes_hdp
+  - name: FIX Hadoop Jars| Get Metastore curator-recipes jar
+    shell:
+      cmd: "find {{ metastore_install_dir }}/lib/ -type f -name 'curator-recipes-*.jar'"
+    register: _curator_recipes_metastore
+  - name: FIX Hadoop Jars| Show found jars
+    debug:
+      msg:
+        - "Hadoop guava: {{ _guava_hdp.stdout.split('/')[-1] }}"
+        - "Metastore   guava: {{ _guava_metastore.stdout.split('/')[-1] }}"
+        - "Hadoop curator-client: {{ _curator_client_hdp.stdout.split('/')[-1] }}"
+        - "Metastore   curator-client: {{ _curator_client_metastore.stdout.split('/')[-1] }}"
+        - "Hadoop curator-framework: {{ _curator_framework_hdp.stdout.split('/')[-1] }}"
+        - "Metastore   curator-framework: {{ _curator_framework_metastore.stdout.split('/')[-1] }}"
+        - "Hadoop curator-recipes: {{ _curator_recipes_hdp.stdout.split('/')[-1] }}"
+        - "Metastore   curator-recipes: {{ _curator_recipes_metastore.stdout.split('/')[-1] }}"
+  become: false
+  ignore_errors: true
+
+- block:
+  - name: FIX Guava lib| Backup Metastore guava jar
+    copy:
+      src: "{{ _guava_metastore.stdout }}"
+      dest: "{{ _guava_metastore.stdout }}.bkp"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Guava lib| Copy Hadoop guava jar to Metastore
+    copy:
+      src: "{{ _guava_hdp.stdout }}"
+      dest: "{{ metastore_install_dir }}/lib/{{ _guava_hdp.stdout.split('/')[-1] }}"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Guava lib| Remove old Metastore guava jar
+    file:
+      path: "{{ _guava_metastore.stdout }}"
+      state: absent
+  when:
+    - _guava_hdp.stdout | length > 0
+    - _guava_metastore.stdout | length > 0
+    - _guava_hdp.stdout.split('/')[-1] > _guava_metastore.stdout.split('/')[-1]
+
+- block:
+  - name: FIX Curator-Client lib| Backup Metastore curator-client jar
+    copy:
+      src: "{{ _curator_client_metastore.stdout }}"
+      dest: "{{ _curator_client_metastore.stdout }}.bkp"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Curator-Client lib| Copy Hadoop curator-client jar to Metastore
+    copy:
+      src: "{{ _curator_client_hdp.stdout }}"
+      dest: "{{ metastore_install_dir }}/lib/{{ _curator_client_hdp.stdout.split('/')[-1] }}"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Curator-Client lib| Remove old Metastore curator-client jar
+    file:
+      path: "{{ _curator_client_metastore.stdout }}"
+      state: absent
+  when:
+    - _curator_client_hdp.stdout | length > 0
+    - _curator_client_metastore.stdout | length > 0
+    - _curator_client_hdp.stdout.split('/')[-1] > _curator_client_metastore.stdout.split('/')[-1]
+
+- block:
+  - name: FIX Curator-Client lib| Backup Metastore curator-framework jar
+    copy:
+      src: "{{ _curator_framework_metastore.stdout }}"
+      dest: "{{ _curator_framework_metastore.stdout }}.bkp"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Curator-Client lib| Copy Hadoop curator-framework jar to Metastore
+    copy:
+      src: "{{ _curator_framework_hdp.stdout }}"
+      dest: "{{ metastore_install_dir }}/lib/{{ _curator_framework_hdp.stdout.split('/')[-1] }}"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Curator-Framework lib| Remove old Metastore curator-framework jar
+    file:
+      path: "{{ _curator_framework_metastore.stdout }}"
+      state: absent
+  when:
+    - _curator_framework_hdp.stdout | length > 0
+    - _curator_framework_metastore.stdout | length > 0
+    - _curator_framework_hdp.stdout.split('/')[-1] > _curator_framework_metastore.stdout.split('/')[-1]
+
+- block:
+  - name: FIX Curator-Recipes lib| Backup Metastore curator-recipes jar
+    copy:
+      src: "{{ _curator_recipes_metastore.stdout }}"
+      dest: "{{ _curator_recipes_metastore.stdout }}.bkp"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Curator-Recipes lib| Copy Hadoop curator-recipes jar to Metastore
+    copy:
+      src: "{{ _curator_recipes_hdp.stdout }}"
+      dest: "{{ metastore_install_dir }}/lib/{{ _curator_recipes_hdp.stdout.split('/')[-1] }}"
+      mode: "0644"
+      remote_src: true
+  - name: FIX Curator-Recipes lib| Remove old Metastore curator-recipes jar
+    file:
+      path: "{{ _curator_recipes_metastore.stdout }}"
+      state: absent
+  when:
+    - _curator_recipes_hdp.stdout | length > 0
+    - _curator_recipes_metastore.stdout | length > 0
+    - _curator_recipes_hdp.stdout.split('/')[-1] > _curator_recipes_metastore.stdout.split('/')[-1]

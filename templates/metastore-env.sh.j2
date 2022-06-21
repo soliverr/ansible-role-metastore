@@ -1,0 +1,27 @@
+{{ ansible_managed|comment }}
+{% if metastore_properties['extra-jars'] is defined and metastore_properties['extra-jars'] | length > 0 %}
+{% if metastore_properties['metastore-env']['METASTORE_AUX_JARS_PATH'] is defined %}
+  {% set _extra_jars = metastore_properties['metastore-env']['METASTORE_AUX_JARS_PATH'] + ',' + metastore_properties['extra-jars'] | join(',') %}
+{% else %}
+  {% set _extra_jars = metastore_properties['extra-jars'] | join(',') %}
+{% endif %}
+{% elif metastore_properties['metastore-env']['METASTORE_AUX_JARS_PATH'] is defined %}
+  {% set _extra_jars = metastore_properties['metastore-env']['METASTORE_AUX_JARS_PATH'] %}
+{% endif %}
+
+# Set up Environment for Systemd
+{% for entry in (metastore_properties['metastore-env'] | dict2items) %}
+{% if entry.key == 'METASTORE_AUX_JARS_PATH' %}
+{{ entry.key }}="{{ _extra_jars }}"
+{% else %}
+{{ entry.key }}="{{ entry.value }}"
+{% endif %}
+{% endfor %}
+
+# # Set up Environment for Systemd
+{% for entry in (metastore_properties['metastore-env'] | dict2items)  %}
+export {{ entry.key }}
+{% endfor %}
+{% if _extra_jars is defined and metastore_properties['metastore-env']['METASTORE_AUX_JARS_PATH'] is not defined %}
+export METASTORE_AUX_JARS_PATH
+{% endif %}

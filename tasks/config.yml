@@ -1,0 +1,32 @@
+---
+- name: "METASTORE CONFIG| Setup Metastore properties"
+  set_fact:
+    metastore_properties: "{{ default_metastore_properties
+                              | combine( metastore_properties|default({}), recursive=true ) }}"
+
+- name: "METASTORE CONFIG| Create Metastore configuration for '{{ _metastore_version }}'"
+  import_role: 
+    name: soliverr.bigdata.config
+  vars:
+    bigdata_owner: "{{ (metastore_user_create) | ternary(metastore_user, 'root') }}"
+    bigdata_group: "{{ (metastore_user_create) | ternary(metastore_group, 'root') }}"
+    bigdata_install_dir: "{{ metastore_install_dir }}"
+    bigdata_configuration_pristine_dir: "{{ metastore_install_dir }}/conf"
+    bigdata_configuration_pristine_copy: true
+    bigdata_configuration_base_dir: "{{ metastore_etc_base_dir }}"
+    bigdata_etc_dir: "{{ metastore_etc_dir }}"
+    bigdata_log_dir: "{{ metastore_log_dir }}"
+    bigdata_profile_name: "{{ metastore_profile_name }}"
+    bigdata_profile_template: 'metastore-profile.sh.j2'
+    bigdata_service_set_default: "{{ metastore_service_set_default }}"
+    bigdata_env_template: 'metastore-env.sh.j2'
+    bigdata_env_name: "{{ metastore_env_name }}"
+
+- name: "METASTORE CONFIG| Manage metastore-site.xml for '{{ _metastore_version }}'"
+  template:
+    src: metastore-site.xml.j2
+    dest: "{{ metastore_etc_dir }}/metastore-site.xml"
+    owner: "{{ (metastore_user_create) | ternary(metastore_user, 'root') }}"
+    group: "{{ (metastore_user_create) | ternary(metastore_group, 'root') }}"
+    mode: '0664'
+    force: true

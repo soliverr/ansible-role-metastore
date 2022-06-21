@@ -1,0 +1,22 @@
+{{ ansible_managed|comment }}
+
+{% if metastore_service_name|length > 0 %}
+  {% set _env_path = metastore_etc_base_dir + '/%i' %}
+{% else %}
+  {% set _env_path = metastore_etc_dir %}
+{% endif %}
+
+[Unit]
+Description=Hive Metastore service for version {{ metastore_version }}
+Requires=network-online.target
+
+[Service]
+User={{ metastore_user }}
+Group={{ metastore_group }}
+EnvironmentFile={{ _env_path }}/metastore-env.sh
+EnvironmentFile={{ hadoop_env_sh }}
+Type=simple
+ExecStart={{ metastore_install_dir }}/bin/start-metastore
+
+[Install]
+WantedBy=multi-user.target

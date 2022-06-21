@@ -1,0 +1,14 @@
+---
+- name: "METASTORE SERVICE| Create METASTORE systemd units for service_name '{{ metastore_service_name }}'"
+  template:
+    src: metastore.service.j2
+    dest: "/etc/systemd/system/metastore@{{ metastore_service_name }}.service"
+
+- name: "METASTORE SERVICE| Manage METASTORE services:
+      state = {{ metastore_service_state }},
+      enabled = {{ metastore_service_enabled }}"
+  service:
+    name: "metastore@{{ metastore_service_name }}"
+    state: "{{ metastore_service_state }}"
+    enabled: "{{ metastore_service_enabled }}"
+    daemon_reload: true

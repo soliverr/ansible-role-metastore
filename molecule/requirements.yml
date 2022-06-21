@@ -1,0 +1,24 @@
+# This file describes roles which should be installed for project work.
+# It should be used with ansible-galaxy command, as follow:
+# ansible-galaxy install -r requirements.yml
+---
+collections:
+  - name: ansible.posix
+
+roles:
+#  - name: java
+#    src: git@gitlab.dellin.ru:hadoop-iac/ansible-role-java.git
+#    scm: git
+#    version: 1.10.2-bia
+#    token: Xmc4CHFwYT-tyCUhBJ8T
+#  - name: hadoop
+#    src: git@gitlab.dellin.ru:hadoop-iac/ansible-role-hadoop.git
+#    scm: git
+#    version: 1.0.9-bia
+#    token: 9GB9ouyE8QM-ar1Kmtez
+  - name: java
+    src: "https://gitlab%2Bdeploy-token-92:8KddJhGECpCDhezHD5Gx@gitlab.dellin.ru:hadoop-iac/ansible-role-java.git"
+    version: 1.10.2-bia
+  - name: hadoop
+    src: "https://gitlab%2Bdeploy-token-92:8KddJhGECpCDhezHD5Gx@gitlab.dellin.ru:hadoop-iac/ansible-role-hadoop.git"
+    version: 1.0.9-bia

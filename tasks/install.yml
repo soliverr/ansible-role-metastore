@@ -1,0 +1,28 @@
+---
+
+- name: "METASTORE INSTALL| Install Metastore distribution"
+  import_role: 
+    name: soliverr.bigdata.install
+  vars:
+    bigdata_system_dependencies: "{{ metastore_system_dependencies }}"
+    bigdata_install_dir: "{{ metastore_install_dir }}"
+    bigdata_url: "{{ metastore_url }}"
+
+- name: "METASTORE INSTALL| Install Log4J Web artifact"
+  import_role: 
+    name: soliverr.bigdata.maven_artifacts
+  vars:
+    maven_artifacts:
+      - name: log4j-web
+        group_id: org.apache.logging.log4j
+        artifact_id: log4j-web
+        version: "{{ metastore_log4j_web_version }}"
+        dest_dir: "{{ metastore_install_dir }}/lib"
+
+- name: "METASTORE INSTALL| Create auxiliary path: {{ metastore_aux_dir }}"
+  ansible.builtin.file:
+    path: "{{ metastore_aux_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"

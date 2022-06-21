@@ -1,0 +1,7 @@
+{{ ansible_managed|comment }}
+
+# Source HIVE METASTORE environment
+. {{ metastore_etc_base_dir }}/conf/metastore-env.sh
+
+# Set up system PATH
+[[ "$PATH" =~ (^|:)"$METASTORE_HOME/bin"(|/)(:|$) ]] || PATH=$METASTORE_HOME/bin:$PATH

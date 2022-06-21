@@ -1,0 +1,12 @@
+---
+- name: Converge
+  become: true
+  hosts: all
+  vars:
+    hive_version: '2.3.8'
+    hive_service_name: molecule
+    hive_service_set_default: true
+  tasks:
+    - name: "Include ansible-role-hive"
+      include_role:
+        name: "ansible-role-hive"

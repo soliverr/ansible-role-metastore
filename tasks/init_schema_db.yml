@@ -1,0 +1,32 @@
+---
+
+- name: "INIT METASTORE| Check if Metastore initialized"
+  stat:
+    path: "{{ metastore_etc_dir }}/metastore_db_type"
+  register: _metastore_inited
+
+- name: "INIT METASTORE| Init schema for db_type = {{ metastore_db_type }}"
+  become_user: "{{ metastore_user }}"
+  run_once: true
+  shell: >
+    . {{ metastore_etc_dir }}/metastore-env.sh ;
+    [ -f {{ hadoop_env_sh }} ] && . {{ hadoop_env_sh }} ;
+    {{ metastore_install_dir }}/bin/schematool -initSchema -dbType {{ metastore_db_type }}
+  register: _init_schema_db
+  when:
+    - not _metastore_inited.stat.exists
+  ignore_errors: true
+
+# - debug:
+# msg: "{{ _init_schema_db }}"
+
+- name: "INIT METASTORE| Set Hive Metastore initialization flag"
+  copy:
+    content: >
+      Initialized metastore db '{{ metastore_db_name}}'
+      of type '{{ metastore_db_type }}'
+      on host '{{ metastore_db_host }}'
+    dest: "{{ metastore_etc_dir }}/metastore_db_type"
+  when:
+    - not _metastore_inited.stat.exists
+    - '"Initialization script completed" in _init_schema_db.stdout'

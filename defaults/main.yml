@@ -1,0 +1,98 @@
+---
+# defaults file for ansible-role-metastore
+
+# -----------------------------------------------------------------------------
+## Version
+metastore_version: '3.1.3'
+metastore_log4j_web_version: '2.17.2'
+
+# -----------------------------------------------------------------------------
+## Download configuration
+use_proxy: false
+
+# Mirror to download binary distribution
+metastore_mirror: "https://repo1.maven.org/maven2/org/apache"
+
+# -----------------------------------------------------------------------------
+## Service configuration
+# Systemd service can be named to use various configuration for one site, 
+# e.g. 'metastore@<metastore_service_name>'
+metastore_service_name: ""
+
+# Set this service as system default
+metastore_service_set_default: false
+
+# Internal version and service if service name is supplied
+_metastore_version: "{{ metastore_service_name if (metastore_service_name|length > 0) else metastore_version }}"
+# Internal service name
+_metastore_service_name: "{{ metastore_service_name if (metastore_service_name|length > 0) else '' }}"
+
+# -----------------------------------------------------------------------------
+## System configuration
+metastore_user: metastore
+metastore_group: metastore
+# Create users for service
+metastore_user_create: true
+# start on boot
+metastore_service_enabled: true
+# current state: started, stopped
+metastore_service_state: started
+
+# -----------------------------------------------------------------------------
+## Files & Paths metastore
+metastore_etc_base_dir: "/etc/metastore"
+metastore_etc_dir: "{{ metastore_etc_base_dir }}/{{ _metastore_version }}"
+metastore_log_dir: "/var/log/metastore/{{ _metastore_version }}"
+metastore_base_dir: "/opt/metastore"
+metastore_install_dir: "{{ metastore_base_dir }}/{{ metastore_version }}"
+metastore_aux_dir: "/opt/hadoop-aux-libs"
+metastore_profile_name: "metastore.sh"
+metastore_env_name: "metastore-env.sh"
+
+# Where to search Hadoop installation
+hadoop_install_dir: "/opt/hadoop"
+hadoop_env_sh: "/etc/hadoop/conf/hadoop-env.sh"
+
+# -----------------------------------------------------------------------------
+## Database metastore configuration
+metastore_autocreate: false
+metastore_schema_verification: true
+metastore_db_name: "metastore_db"
+metastore_db_type: "derby"
+metastore_db_host: "localhost"
+metastore_db_port: "{{ '5432' if metastore_db_type == 'postgres' else '' }}"
+metastore_db_user: "metastore"
+metastore_db_pass: "metastore"
+
+# -----------------------------------------------------------------------------
+## Metastore configuration
+metastore_thrift_port: 9083
+metastore_init_schema_db: false
+
+default_metastore_properties:
+ metastore-env:
+  METASTORE_HOME: "{{ metastore_install_dir }}"
+  METASTORE_CONF_DIR: "{{ metastore_etc_dir }}"
+  METASTORE_AUX_JARS_PATH: "{{ metastore_aux_dir }}"
+  JAVA_HOME: "{{ metastore_java_home | default(omit) }}"
+ metastore-site:
+  metastore.thrift.uris: "thrift://localhost:{{metastore_thrift_port }}"
+  metastore.thrift.port: "{{ metastore_thrift_port }}"
+  metastore.task.threads.always: "org.apache.hadoop.hive.metastore.events.EventCleanerTask"
+  metastore.expression.proxy: "org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy"
+  metastore.schema.verification: "{{ metastore_schema_verification }}"
+  datanucleus.schema.autoCreateAll: "{{ metastore_autocreate }}"
+  datanucleus.autoStartMechanismMode: "ignored"
+  datanucleus.connectionPoolingType: "HikariCP"
+  javax.jdo.option.ConnectionDriverName: 
+    "{{ 'org.postgresql.Driver' if metastore_db_type == 'postgres' 
+          else 'com.mysql.jdbc.Driver' if metastore_db_type == 'mysql'
+          else omit
+    }}"
+  javax.jdo.option.ConnectionURL:
+    "jdbc:{{ 'postgresql' if metastore_db_type == 'postgres'
+        else metastore_db_type
+    }}://{{ metastore_db_host }}:{{ metastore_db_port }}/{{ metastore_db_name }}"
+  javax.jdo.option.ConnectionUserName: "{{ metastore_db_user }}"
+  javax.jdo.option.ConnectionPassword: "{{ metastore_db_pass }}"
+ extra-jars: []

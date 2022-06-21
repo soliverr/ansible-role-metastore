@@ -1,0 +1,25 @@
+---
+
+- name: "METASTORE| Install"
+  import_tasks: install.yml
+  tags:
+    - metastore
+    - metastore_install
+
+- name: "METASTORE| Configuration"
+  import_tasks: config.yml
+  tags:
+    - metastore
+    - metastore_config
+
+#- name: "METASTORE| Init Metastore Schema DB"
+#  import_tasks: init_schema_db.yml
+#  tags:
+#    - metastore
+#    - metastore_init_schema_db
+
+#- name: "METASTORE| Service"
+#  import_tasks: service.yml
+#  tags:
+#    - metastore
+#    - metastore_service
