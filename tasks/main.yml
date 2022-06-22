@@ -5,6 +5,7 @@
   tags:
     - metastore
     - metastore_install
+    - metastore_user
 
 - name: "METASTORE| Install"
   import_tasks: install.yml
