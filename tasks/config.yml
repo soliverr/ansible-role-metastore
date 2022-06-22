@@ -1,4 +1,16 @@
 ---
+- name: "METASTORE CONFIG| Setup JAVA_HOME"
+  block:
+    - import_role:
+        name: soliverr.bigdata.java_home
+      vars:
+        java_version: "{{ metastore_java_version }}"
+    - name: "METASTORE CONFIG | Setup JAVA_HOME for Metastore"
+      set_fact:
+        metastore_java_home: "{{ java_home_dir.fact }}"
+      when: java_home_dir.fact | length > 0
+  when: metastore_java_home is not defined
+
 - name: "METASTORE CONFIG| Setup Metastore properties"
   set_fact:
     metastore_properties: "{{ default_metastore_properties
