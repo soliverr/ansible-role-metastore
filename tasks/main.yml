@@ -1,11 +1,11 @@
 ---
 
-- name: "METASTORE| Create users and groups"
-  import_tasks: create_users.yml
+- name: "METASTORE| Create user and group"
+  import_tasks: create_user.yml
   tags:
     - metastore
     - metastore_install
-    
+
 - name: "METASTORE| Install"
   import_tasks: install.yml
   tags:
