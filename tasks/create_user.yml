@@ -9,6 +9,7 @@
 - name: "METASTORE USER and GROUP| Ensure '{{ metastore_user }}' user exists"
   ansible.builtin.user:
     name: "{{ metastore_user }}"
+    group: "{{ metastore_group }}"
     groups: "{{ hadoop_group | default(omit)}}"
     append: "{{ true if hadoop_group is defined else false }}"
   when: metastore_user_create
