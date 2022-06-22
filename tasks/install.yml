@@ -7,6 +7,9 @@
     bigdata_system_dependencies: "{{ metastore_system_dependencies }}"
     bigdata_install_dir: "{{ metastore_install_dir }}"
     bigdata_url: "{{ metastore_url }}"
+    bigdata_owner: "root"
+    bigdata_group: "root"
+    bigdata_task_suffix: "METASTORE"
 
 - name: "METASTORE INSTALL| Install Log4J Web artifact"
   import_role: 

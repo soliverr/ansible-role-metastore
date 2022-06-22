@@ -51,8 +51,8 @@ metastore_profile_name: "metastore.sh"
 metastore_env_name: "metastore-env.sh"
 
 # Where to search Hadoop installation
-hadoop_install_dir: "/opt/hadoop"
-hadoop_env_sh: "/etc/hadoop/conf/hadoop-env.sh"
+#hadoop_install_dir: "/opt/hadoop"
+#hadoop_env_sh: "/etc/hadoop/conf/hadoop-env.sh"
 
 # -----------------------------------------------------------------------------
 ## Database metastore configuration
