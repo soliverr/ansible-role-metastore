@@ -2,7 +2,9 @@
 # vars file for ansible-role-metastore
 
 # Common system packages
-metastore_system_dependencies: []
+metastore_system_dependencies:
+  - gzip
+  - tar
 
 # Installation URL
 metastore_package_name: "hive-standalone-metastore-{{ metastore_version }}-bin.tar.gz"
