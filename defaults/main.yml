@@ -69,6 +69,9 @@ metastore_db_pass: "metastore"
 ## Metastore configuration
 metastore_thrift_port: 9083
 metastore_init_schema_db: false
+## Allow Hadoop S3A libraries
+metastore_hadoop_s3a_enable: false
+
 
 default_metastore_properties:
  metastore-env:

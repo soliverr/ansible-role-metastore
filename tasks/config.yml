@@ -16,6 +16,13 @@
     metastore_properties: "{{ default_metastore_properties
                               | combine( metastore_properties|default({}), recursive=true ) }}"
 
+- name: "METASTORE CONFIG| Hadoop AWS Configuration"
+  import_tasks: aws_hadoop_jars.yml
+  when: metastore_hadoop_s3a_enable
+  tags:
+    - metastore
+    - metastore_config
+
 - name: "METASTORE CONFIG| Create Metastore configuration for '{{ _metastore_version }}'"
   import_role: 
     name: soliverr.bigdata.config

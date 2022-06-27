@@ -1,0 +1,18 @@
+---
+
+# TODO: check for `fs.s3a.impl == org.apache.hadoop.fs.s3a.S3AFileSystem` property
+
+- name: METASTORE CONFIG| Get AWS Hadoop jars
+  shell:
+    cmd: "find {{ hadoop_install_dir | default(omit) }}/share/hadoop/tools/lib/ -type f -name '*aws*.jar'"
+  register: _metastore_hdp_aws_jars
+  ignore_errors: true
+
+- name: METASTORE CONFIG| Setup HADOOP_CLASSPATH for Hadoop AWS libraries
+  set_fact:
+    metastore_properties: "{{ metastore_properties
+                              | combine({'metastore-env': {'HADOOP_AWS_CLASSPATH': _metastore_hdp_aws_jars.stdout_lines|join(':')}}, recursive=true ) }}"
+  when: 
+    - _metastore_hdp_aws_jars is defined
+    - _metastore_hdp_aws_jars.stdout is defined
+    - _metastore_hdp_aws_jars.stdout | length > 0

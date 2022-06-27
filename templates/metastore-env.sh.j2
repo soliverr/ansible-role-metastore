@@ -13,15 +13,27 @@
 {% for entry in (metastore_properties['metastore-env'] | dict2items) %}
 {% if entry.key == 'METASTORE_AUX_JARS_PATH' %}
 {{ entry.key }}="{{ _extra_jars }}"
+{% elif entry.key == 'HADOOP_AWS_CLASSPATH' %}
 {% else %}
 {{ entry.key }}="{{ entry.value }}"
 {% endif %}
 {% endfor %}
 
+{% if metastore_properties['metastore-env']['HADOOP_AWS_CLASSPATH'] is defined %}
+# Setup HADOOP_CLASSPATH for AWS
+HADOOP_CLASSPATH="${HADOOP_CLASSPATH}:{{ metastore_properties['metastore-env']['HADOOP_AWS_CLASSPATH'] }}"
+{% endif %}
+
 # # Set up Environment for Systemd
 {% for entry in (metastore_properties['metastore-env'] | dict2items)  %}
+{% if entry.key == 'HADOOP_AWS_CLASSPATH' %}
+{% else %}
 export {{ entry.key }}
+{% endif %}
 {% endfor %}
 {% if _extra_jars is defined and metastore_properties['metastore-env']['METASTORE_AUX_JARS_PATH'] is not defined %}
 export METASTORE_AUX_JARS_PATH
+{% endif %}
+{% if metastore_properties['metastore-env']['HADOOP_AWS_CLASSPATH'] is defined and metastore_properties['metastore-env']['HADOOP_CLASSPATH'] is not defined %}
+export HADOOP_CLASSPATH
 {% endif %}
