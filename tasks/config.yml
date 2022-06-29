@@ -40,7 +40,9 @@
     bigdata_service_set_default: "{{ metastore_service_set_default }}"
     bigdata_env_template: 'metastore-env.sh.j2'
     bigdata_env_name: "{{ metastore_env_name }}"
-    bigdata_task_suffix: "METASTORE"
+    bigdata_log4j_template: 'metastore-log4j2.properties.j2'
+    bigdata_log4j_name: "{{ metastore_log4j_name }}"
+    bigdata_task_suffix: 'METASTORE'
 
 - name: "METASTORE CONFIG| Manage metastore-site.xml for '{{ _metastore_version }}'"
   template:

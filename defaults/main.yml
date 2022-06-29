@@ -49,10 +49,16 @@ metastore_install_dir: "{{ metastore_base_dir }}/{{ metastore_version }}"
 metastore_aux_dir: "/opt/hadoop-aux-libs"
 metastore_profile_name: "metastore.sh"
 metastore_env_name: "metastore-env.sh"
+metastore_log4j_name: "metastore-log4j2.properties"
 
-# Where to search Hadoop installation
-#hadoop_install_dir: "/opt/hadoop"
-#hadoop_env_sh: "/etc/hadoop/conf/hadoop-env.sh"
+## Logging
+metastore_logger_root_logger: "console, DFRA"
+metastore_logger_log_level: "INFO"
+metastore_logger_perflogger_log_level: "ERROR"
+metastore_logger_datanucleus_log_level: "ERROR"
+metastore_logger_datastore_log_level: "ERROR"
+metastore_logger_jpox_log_level: "ERROR"
+
 
 # -----------------------------------------------------------------------------
 ## Database metastore configuration

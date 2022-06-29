@@ -19,11 +19,14 @@ name = MetastoreLog4j2
 packages = org.apache.hadoop.hive.metastore
 
 # list of properties
-property.metastore.log.level = INFO
-property.metastore.root.logger = DRFA
+property.metastore.log.level = {{ metastore_logger_log_level }}
+property.metastore.root.logger = {{ metastore_logger_root_logger }}
 property.metastore.log.dir = {{ metastore_log_dir }}
 property.metastore.log.file = metastore.log
-property.hive.perflogger.log.level = INFO
+property.hive.perflogger.log.level = {{ metastore_logger_perflogger_log_level }}
+property.datanucleus.log.level = {{ metastore_logger_datanucleus_log_level }}
+property.datastore.log.level = {{ metastore_logger_datastore_log_level }}
+property.jpox.log.level = {{ metastore_logger_jpox_log_level }}
 
 # list of all appenders
 appenders = console, DRFA
@@ -54,13 +57,13 @@ appender.DRFA.strategy.max = 30
 loggers = DataNucleus, Datastore, JPOX, PerfLogger
 
 logger.DataNucleus.name = DataNucleus
-logger.DataNucleus.level = ERROR
+logger.DataNucleus.level = ${sys:datanucleus.log.level}
 
 logger.Datastore.name = Datastore
-logger.Datastore.level = ERROR
+logger.Datastore.level = ${sys:datastore.log.level}
 
 logger.JPOX.name = JPOX
-logger.JPOX.level = ERROR
+logger.JPOX.level = ${sys:jpox.log.level}
 
 logger.PerfLogger.name = org.apache.hadoop.hive.ql.log.PerfLogger
 logger.PerfLogger.level = ${sys:hive.perflogger.log.level}
