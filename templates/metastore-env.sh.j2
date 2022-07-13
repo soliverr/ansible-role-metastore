@@ -24,7 +24,19 @@
 HADOOP_CLASSPATH="${HADOOP_CLASSPATH}:{{ metastore_properties['metastore-env']['HADOOP_AWS_CLASSPATH'] }}"
 {% endif %}
 
-# # Set up Environment for Systemd
+{% if metastore_jmx_enabled %}
+# Setup JMX options
+HADOOP_OPTS="$HADOOP_OPTS \
+-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false \
+-Dcom.sun.management.jmxremote.port={{ metastore_jmx_port }}"
+{% if metastore_jmx_javaagent_enabled and metastore_jmx_javaagent_jar_path | length > 0 and metastore_jmx_javaagent_config_path | length > 0 %}
+# Setup JMX java agent exporter
+HADOOP_OPTS="$HADOOP_OPTS -javaagent:{{ metastore_jmx_javaagent_jar_path }}={{ metastore_jmx_javaagent_port }}:{{ metastore_jmx_javaagent_config_path }}"
+{% endif %}
+{% endif %}
+
+# Set up Environment for BASH
 {% for entry in (metastore_properties['metastore-env'] | dict2items)  %}
 {% if entry.key == 'HADOOP_AWS_CLASSPATH' %}
 {% else %}
@@ -36,4 +48,7 @@ export METASTORE_AUX_JARS_PATH
 {% endif %}
 {% if metastore_properties['metastore-env']['HADOOP_AWS_CLASSPATH'] is defined and metastore_properties['metastore-env']['HADOOP_CLASSPATH'] is not defined %}
 export HADOOP_CLASSPATH
+{% endif %}
+{% if metastore_jmx_enabled %}
+export HADOOP_CLIENT_OPTS
 {% endif %}

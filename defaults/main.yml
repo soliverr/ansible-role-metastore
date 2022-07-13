@@ -59,7 +59,6 @@ metastore_logger_datanucleus_log_level: "ERROR"
 metastore_logger_datastore_log_level: "ERROR"
 metastore_logger_jpox_log_level: "ERROR"
 
-
 # -----------------------------------------------------------------------------
 ## Database metastore configuration
 metastore_autocreate: false
@@ -77,6 +76,13 @@ metastore_thrift_port: 9083
 metastore_init_schema_db: false
 ## Allow Hadoop S3A libraries
 metastore_hadoop_s3a_enable: false
+## JMX
+metastore_jmx_enabled: false
+metastore_jmx_port: 9088
+metastore_jmx_javaagent_enabled: false
+metastore_jmx_javaagent_port: 9090
+metastore_jmx_javaagent_jar_path: ''
+metastore_jmx_javaagent_config_path: "{{ metastore_etc_dir }}/prometheus_jmx_exporter.yml"
 
 
 default_metastore_properties:
@@ -91,6 +97,7 @@ default_metastore_properties:
   metastore.task.threads.always: "org.apache.hadoop.hive.metastore.events.EventCleanerTask"
   metastore.expression.proxy: "org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy"
   metastore.schema.verification: "{{ metastore_schema_verification }}"
+  metastore.metrics.enabled: "{{ metastore_jmx_enabled }}"
   datanucleus.schema.autoCreateAll: "{{ metastore_autocreate }}"
   datanucleus.autoStartMechanismMode: "ignored"
   datanucleus.connectionPoolingType: "HikariCP"

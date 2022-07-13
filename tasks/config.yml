@@ -52,3 +52,15 @@
     group: "{{ (metastore_user_create) | ternary(metastore_group, 'root') }}"
     mode: '0664'
     force: true
+
+- name: "METASTORE CONFIG| Maintain Prometheus JMX Exporter config file"
+  ansible.builtin.copy:
+    src: prometheus_javaagent_config.yml
+    dest: "{{ metastore_jmx_javaagent_config_path }}"
+    owner: "{{ (metastore_user_create) | ternary(metastore_user, 'root') }}"
+    group: "{{ (metastore_user_create) | ternary(metastore_group, 'root') }}"
+    mode: '0664'
+  when:
+    - metastore_jmx_enabled
+    - metastore_jmx_javaagent_enabled
+    - metastore_jmx_javaagent_config_path | length > 0
